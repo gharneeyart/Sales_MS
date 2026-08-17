@@ -27,6 +27,41 @@ jobs:
     defaults:
       run:
         working-directory: backend
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: sales_dashboard_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      # RLS is silently bypassed for superusers and table owners without
+      # FORCE ROW LEVEL SECURITY (A.3) — the CI Postgres service's default
+      # role is a superuser, so the app must run migrations and tests as a
+      # separate restricted role for the RLS test to prove anything real.
+      # See backend/.env.example and migrations/20260101000006-enable-rls.js.
+      APP_DB_PASSWORD: ci-only-password
+      DATABASE_URL: postgres://sales_dashboard_app:ci-only-password@localhost:5432/sales_dashboard_test
+      REDIS_URL: redis://localhost:6379
+      CORS_ORIGINS: http://localhost:5173
+      JWT_ACCESS_SECRET: ci-only-access-secret
+      JWT_REFRESH_SECRET: ci-only-refresh-secret
+      JWT_INVITE_SECRET: ci-only-invite-secret
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,3 +73,17 @@ jobs:
       - run: npm run typecheck
       - run: npm run lint
       - run: npm run build
+      - name: Install postgresql-client
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+      - name: Provision restricted app role (non-superuser, so RLS applies to it)
+        run: |
+          PGPASSWORD=postgres psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 <<SQL
+          CREATE ROLE sales_dashboard_app LOGIN PASSWORD '${APP_DB_PASSWORD}';
+          ALTER DATABASE sales_dashboard_test OWNER TO sales_dashboard_app;
+          SQL
+          PGPASSWORD=postgres psql -h localhost -U postgres -d sales_dashboard_test -v ON_ERROR_STOP=1 <<SQL
+          ALTER SCHEMA public OWNER TO sales_dashboard_app;
+          SQL
+      - run: npm run db:migrate
+      - run: npm run db:seed
+      - run: npm test

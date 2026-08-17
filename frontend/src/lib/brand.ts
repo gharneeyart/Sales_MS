@@ -1,18 +1,10 @@
 /**
- * Placeholder for BrandSettings (A.6) until Phase 2 wires up the real
- * per-org fetch. Colours already live as CSS variables on :root (index.css)
- * so a future BrandSettings load just needs to call
+ * Colours already live as CSS variables on :root (index.css) — once Phase 2
+ * wires up the real BrandSettings fetch, applying a tenant's theme is just
  * document.documentElement.style.setProperty("--primary", org.primaryColor).
+ * Until then (and for logos — no upload until Phase 2), initials carry an
+ * org's or user's identity, same fallback pattern everywhere.
  */
-export interface Brand {
-  displayName: string
-  logoUrl?: string
-}
-
-export const brand: Brand = {
-  displayName: "Acme Traders",
-}
-
 export function getInitials(name: string): string {
   const parts = name.trim().split(/\s+/)
   const initials = parts.length === 1 ? parts[0].slice(0, 2) : parts[0][0] + parts[parts.length - 1][0]

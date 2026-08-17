@@ -10,13 +10,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { currentUser } from "@/lib/session"
+import { useAuth } from "@/contexts/AuthContext"
 import { getInitials } from "@/lib/brand"
 
 function UserMenu() {
   const navigate = useNavigate()
-  const initials = getInitials(currentUser.name)
-  const roleLabel = currentUser.role === "OWNER" ? "Owner" : "Staff"
+  const { state, logout } = useAuth()
+
+  if (state.status !== "authenticated") return null
+
+  const { user, role } = state
+  const initials = getInitials(user.name)
+  const roleLabel = role === "OWNER" ? "Owner" : "Staff"
+
+  async function handleLogout() {
+    await logout()
+    navigate("/login", { replace: true })
+  }
 
   return (
     <DropdownMenu>
@@ -26,12 +36,11 @@ function UserMenu() {
           className="flex items-center gap-2 rounded-lg py-1 pr-1 pl-1 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
           <Avatar size="sm">
-            {currentUser.avatarUrl && <img src={currentUser.avatarUrl} alt={currentUser.name} />}
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <span className="hidden text-left sm:block">
             <span className="block text-sm leading-tight font-medium text-foreground">
-              {currentUser.name}
+              {user.name}
             </span>
             <span className="block text-xs leading-tight text-muted-foreground">
               {roleLabel}
@@ -42,7 +51,7 @@ function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
-          <p className="text-sm font-medium">{currentUser.name}</p>
+          <p className="text-sm font-medium">{user.name}</p>
           <p className="text-xs font-normal text-muted-foreground">{roleLabel}</p>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -50,7 +59,7 @@ function UserMenu() {
           <SettingsIcon className="size-4" />
           Settings
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive">
+        <DropdownMenuItem variant="destructive" onClick={handleLogout}>
           <LogOut className="size-4" />
           Log out
         </DropdownMenuItem>
