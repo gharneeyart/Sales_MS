@@ -1,11 +1,13 @@
 import { Route, Routes } from "react-router-dom"
-import { BarChart3, Package, Receipt, Truck, Users } from "lucide-react"
+import { BarChart3, Receipt, Truck, Users } from "lucide-react"
 
 import { AppShell } from "@/components/layout/AppShell"
 import { Toaster } from "@/components/ui/sonner"
 import { ProtectedRoute, PublicOnlyRoute } from "@/components/ProtectedRoute"
 import { Dashboard } from "@/pages/Dashboard"
 import { Settings } from "@/pages/Settings"
+import { Products } from "@/pages/Products"
+import { ProductDetail } from "@/pages/ProductDetail"
 import { PlaceholderPage } from "@/pages/PlaceholderPage"
 import { Login } from "@/pages/auth/Login"
 import { Signup } from "@/pages/auth/Signup"
@@ -53,17 +55,8 @@ function App() {
                       />
                     }
                   />
-                  <Route
-                    path="/products"
-                    element={
-                      <PlaceholderPage
-                        title="Products"
-                        description="Manage your catalogue, pricing, and stock."
-                        icon={Package}
-                        phase="Phase 3"
-                      />
-                    }
-                  />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/products/:id" element={<ProductDetail />} />
                   <Route
                     path="/customers"
                     element={

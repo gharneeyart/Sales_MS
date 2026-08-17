@@ -6,26 +6,37 @@ full system design and phase-by-phase build order.
 - `frontend/` — React + Vite + TypeScript, Tailwind v4, shadcn/ui.
 - `backend/` — Express + TypeScript, Sequelize (Postgres), Redis.
 
-## Phase 1 status
+## Status (through Phase 3)
 
-Tenancy + auth is live: Organization, User, Membership, Plan, Subscription.
+**Tenancy + auth** — Organization, User, Membership, Plan, Subscription.
 Signup creates an org + owner membership + free subscription in one
 transaction. Login issues a short-lived access token (kept in memory on the
 frontend) and a long-lived refresh token (httpOnly cookie); the frontend
-silently refreshes on load so a page reload doesn't log you out. Staff join
-via an emailed invite link (email delivery itself lands in Phase 6 — for now
-`POST /api/invites` returns the link to share manually).
+silently refreshes on load. Staff join via an invite link (`POST
+/api/invites` — email delivery lands in Phase 6, share the link manually
+until then).
 
-**Row-Level Security is switched on and proven**: `memberships` and
-`subscriptions` carry Postgres RLS policies keyed off a `SET`
-per-transaction session variable (`app.current_org_id`), so tenant isolation
-is enforced by the database, not just an app-level query filter. This only
+**Row-Level Security** — `memberships`, `subscriptions`, `brand_settings`,
+`products`, and `stock_movements` all carry Postgres RLS policies keyed off
+a per-transaction session variable (`app.current_org_id`), so isolation is
+enforced by the database, not just an app-level query filter. This only
 means something if the app connects as a non-superuser role — see
-`backend/.env.example` and `backend/migrations/20260101000006-enable-rls.js`
-for why. `backend/test/rls.test.ts` proves two orgs can't see each other's
-rows, and runs in CI against a throwaway Postgres service container.
+`backend/.env.example` and `backend/migrations/20260101000006-enable-rls.js`.
+`backend/test/rls.test.ts` proves it and runs in CI against a throwaway
+Postgres service container.
 
-Entitlements resolver is stubbed ("free, allow all") until Phase 8.
+**Branding** — per-org BrandSettings (name, logo, primary/accent colours),
+logo upload to Cloudinary (PNG/JPG/WebP only, real magic-byte sniffing, 2MB
+cap), colours validated as hex server-side and applied as CSS variables on
+the frontend.
+
+**Products & inventory** — Product CRUD, category filter/autocomplete,
+search, low-stock filter, pagination. Stock is a ledger
+(`stock_movements`) with a cached `stockQty` on Product; every
+create/adjust writes a movement and an ActivityLog entry in the same
+transaction. First real entitlement check: the Free plan's product limit is
+enforced on create. Sentry is wired in (`backend/src/instrument.ts`) but
+stays off unless `SENTRY_DSN` is set.
 
 ## Local setup
 
@@ -46,7 +57,9 @@ psql -d sales_dashboard_dev -c "ALTER SCHEMA public OWNER TO sales_dashboard_app
 
 cp backend/.env.example backend/.env    # DATABASE_URL uses the role above;
                                          # fill in REDIS_URL, CORS_ORIGINS,
-                                         # and the three JWT_* secrets
+                                         # the three JWT_* secrets, and a
+                                         # real CLOUDINARY_URL (logo upload
+                                         # won't work without one)
 cp frontend/.env.example frontend/.env  # VITE_API_URL
 
 cd backend

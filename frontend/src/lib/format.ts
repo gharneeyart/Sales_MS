@@ -16,6 +16,14 @@ export function formatKobo(amountInKobo: number): string {
   return formatNaira(amountInKobo / 100);
 }
 
+export function koboToNaira(kobo: number): number {
+  return kobo / 100;
+}
+
+export function nairaToKobo(naira: number): number {
+  return Math.round(naira * 100);
+}
+
 const dateFormatter = new Intl.DateTimeFormat("en-NG", {
   day: "numeric",
   month: "short",

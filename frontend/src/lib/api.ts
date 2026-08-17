@@ -171,3 +171,80 @@ export async function uploadLogo(file: File): Promise<BrandSettings> {
   if (!res.ok) throw new ApiError(res.status, data.error ?? `Request failed with ${res.status}`)
   return data as BrandSettings
 }
+
+export interface Product {
+  id: string
+  name: string
+  category: string | null
+  sku: string | null
+  unitLabel: string
+  costPrice: number
+  wholesalePrice: number
+  retailPrice: number
+  stockQty: number
+  reorderLevel: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface ProductInput {
+  name: string
+  category?: string | null
+  sku?: string | null
+  unitLabel: string
+  costPrice: number
+  wholesalePrice: number
+  retailPrice: number
+  stockQty: number
+  reorderLevel: number
+}
+
+export interface ListProductsResult {
+  products: Product[]
+  total: number
+  page: number
+  pageSize: number
+}
+
+export function listProducts(params: {
+  search?: string
+  category?: string
+  lowStockOnly?: boolean
+  page: number
+  pageSize: number
+}) {
+  const qs = new URLSearchParams({ page: String(params.page), pageSize: String(params.pageSize) })
+  if (params.search) qs.set("search", params.search)
+  if (params.category) qs.set("category", params.category)
+  if (params.lowStockOnly) qs.set("lowStockOnly", "true")
+  return request<ListProductsResult>(`/api/products?${qs}`)
+}
+
+export function getProductCategories() {
+  return request<string[]>("/api/products/categories")
+}
+
+export function getProduct(id: string) {
+  return request<Product>(`/api/products/${id}`)
+}
+
+export function createProduct(input: ProductInput) {
+  return request<Product>("/api/products", { body: input })
+}
+
+export function updateProduct(id: string, input: ProductInput) {
+  return request<Product>(`/api/products/${id}`, { method: "PATCH", body: input })
+}
+
+export interface StockHistoryEntry {
+  id: string
+  change: number
+  reason: "SALE" | "RESTOCK" | "ADJUSTMENT" | "RETURN"
+  performedBy: string
+  createdAt: string
+  balanceAfter: number
+}
+
+export function getStockHistory(productId: string) {
+  return request<StockHistoryEntry[]>(`/api/products/${productId}/stock-history`)
+}

@@ -8,12 +8,11 @@ import {
   signRefreshToken,
   verifyRefreshToken,
 } from "../auth/tokens"
+import { HttpError } from "../errors"
 
-export class AuthError extends Error {
-  statusCode: number
+export class AuthError extends HttpError {
   constructor(message: string, statusCode = 401) {
-    super(message)
-    this.statusCode = statusCode
+    super(message, statusCode)
   }
 }
 
