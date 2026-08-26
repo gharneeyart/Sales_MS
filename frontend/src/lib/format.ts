@@ -20,6 +20,14 @@ export function koboToNaira(kobo: number): number {
   return kobo / 100;
 }
 
+/** Compact axis/tick label — "₦25,000" or "₦1.2M", no decimals. For chart chrome, not real values. */
+export function formatKoboCompact(amountInKobo: number): string {
+  const naira = amountInKobo / 100;
+  if (Math.abs(naira) >= 1_000_000) return `₦${(naira / 1_000_000).toFixed(1)}M`;
+  if (Math.abs(naira) >= 1_000) return `₦${Math.round(naira / 1000)}K`;
+  return `₦${Math.round(naira)}`;
+}
+
 export function nairaToKobo(naira: number): number {
   return Math.round(naira * 100);
 }

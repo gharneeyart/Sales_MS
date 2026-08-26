@@ -4,9 +4,11 @@ import {
   type CreationOptional,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
 } from "sequelize"
 
 import { sequelize } from "../sequelize"
+import type { User } from "./User"
 
 export type MembershipRole = "OWNER" | "STAFF"
 
@@ -20,6 +22,8 @@ export class Membership extends Model<
   declare role: MembershipRole
   declare createdAt: CreationOptional<Date>
   declare updatedAt: CreationOptional<Date>
+
+  declare User?: NonAttribute<User>
 }
 
 Membership.init(

@@ -18,18 +18,10 @@ import { DataTable, type DataTableColumn } from "@/components/ui/data-table"
 import { EmptyState } from "@/components/ui/empty-state"
 import { ProductSlideOver } from "@/components/products/ProductSlideOver"
 import { formatKobo } from "@/lib/format"
+import { useDebounced } from "@/lib/useDebounced"
 import { getProductCategories, listProducts, type Product } from "@/lib/api"
 
 const PAGE_SIZE = 25
-
-function useDebounced<T>(value: T, delayMs: number): T {
-  const [debounced, setDebounced] = useState(value)
-  useEffect(() => {
-    const timer = setTimeout(() => setDebounced(value), delayMs)
-    return () => clearTimeout(timer)
-  }, [value, delayMs])
-  return debounced
-}
 
 function Products() {
   const navigate = useNavigate()

@@ -1,19 +1,11 @@
-import { Users, Zap, CreditCard, UserCircle, History } from "lucide-react"
-
 import { PageHeader } from "@/components/layout/PageHeader"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { EmptyState } from "@/components/ui/empty-state"
 import { BrandingTab } from "@/pages/settings/BrandingTab"
-
-function ComingSoon({ icon, title }: { icon: typeof Users; title: string }) {
-  return (
-    <EmptyState
-      icon={icon}
-      title={`${title} lands in a later phase`}
-      description="This tab is scaffolded and ready to be built out."
-    />
-  )
-}
+import { AutomationsTab } from "@/pages/settings/AutomationsTab"
+import { TeamTab } from "@/pages/settings/TeamTab"
+import { BillingTab } from "@/pages/settings/BillingTab"
+import { AccountTab } from "@/pages/settings/AccountTab"
+import { ActivityLogTab } from "@/pages/settings/ActivityLogTab"
 
 function Settings() {
   return (
@@ -34,19 +26,19 @@ function Settings() {
           <BrandingTab />
         </TabsContent>
         <TabsContent value="team" className="mt-6">
-          <ComingSoon icon={Users} title="Team" />
+          <TeamTab />
         </TabsContent>
         <TabsContent value="automations" className="mt-6">
-          <ComingSoon icon={Zap} title="Automations" />
+          <AutomationsTab />
         </TabsContent>
         <TabsContent value="billing" className="mt-6">
-          <ComingSoon icon={CreditCard} title="Billing" />
+          <BillingTab />
         </TabsContent>
         <TabsContent value="account" className="mt-6">
-          <ComingSoon icon={UserCircle} title="Account" />
+          <AccountTab />
         </TabsContent>
         <TabsContent value="activity" className="mt-6">
-          <ComingSoon icon={History} title="Activity log" />
+          <ActivityLogTab />
         </TabsContent>
       </Tabs>
     </>

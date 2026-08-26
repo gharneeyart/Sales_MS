@@ -16,12 +16,15 @@
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-soft: var(--primary-soft);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
@@ -66,38 +69,44 @@
 
   /* Tasteful neutral defaults. Every business gets these until it sets its
      own BrandSettings, so nothing is ever unstyled (A.6). */
-  --background: #f7f8fa;
-  --foreground: #111827;
+  --background: #f7f9f8;
+  --foreground: #16211e;
   --card: #ffffff;
-  --card-foreground: #111827;
+  --card-foreground: #16211e;
   --popover: #ffffff;
-  --popover-foreground: #111827;
-  --primary: #2563eb;
+  --popover-foreground: #16211e;
+  --primary: #0c6b5e;
   --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #111827;
-  --muted: #f1f5f9;
-  --muted-foreground: #6b7280;
-  --accent: #0d9488;
-  --accent-foreground: #ffffff;
-  --destructive: #dc2626;
+  --primary-dark: #084f45;
+  --primary-soft: #ddefea;
+  --secondary: #ddefea;
+  --secondary-foreground: #084f45;
+  --muted: #e4e9e7;
+  --muted-foreground: #647069;
+  --accent: #c96f44;
+  --accent-soft: #f6e7dd;
+  --destructive: #d64545;
   --destructive-foreground: #ffffff;
-  --success: #16a34a;
-  --success-foreground: #ffffff;
-  --warning: #d97706;
-  --warning-foreground: #ffffff;
-  --border: #e5e7eb;
-  --input: #e5e7eb;
-  --ring: #2563eb;
+  --success: #1fa971;
+  --warning: #e8a33d;
+  --border: #e4e9e7;
+  --input: #e4e9e7;
+  --ring: #0c6b5e;
+  /* Terracotta, amber, and this brighter green don't clear WCAG contrast
+     against white text — dark teal reads clearly and stays on-brand
+     instead of falling back to plain black. */
+  --accent-foreground: var(--primary-dark);
+  --warning-foreground: var(--primary-dark);
+  --success-foreground: var(--primary-dark);
 
   --sidebar: #ffffff;
-  --sidebar-foreground: #111827;
-  --sidebar-primary: #2563eb;
+  --sidebar-foreground: #16211e;
+  --sidebar-primary: #0c6b5e;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f1f5f9;
-  --sidebar-accent-foreground: #111827;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: #2563eb;
+  --sidebar-accent: #ddefea;
+  --sidebar-accent-foreground: #16211e;
+  --sidebar-border: #e4e9e7;
+  --sidebar-ring: #0c6b5e;
 }
 
 .dark {

@@ -5,7 +5,7 @@ import { validateBody } from "../middleware/validate"
 import { authenticate } from "../middleware/authenticate"
 import { requireRole } from "../middleware/requireRole"
 import { setRefreshCookie } from "../auth/refreshCookie"
-import { AuthError } from "../services/authService"
+import { HttpError } from "../errors"
 import { createInvite, getInviteDetails, acceptInvite } from "../services/inviteService"
 
 export const invitesRouter = Router()
@@ -24,13 +24,14 @@ invitesRouter.post(
   validateBody(createInviteSchema),
   async (req, res, next) => {
     try {
-      const invite = await createInvite({
+      const { token, invite } = await createInvite({
         organizationId: req.auth!.orgId,
+        invitedByUserId: req.auth!.sub,
         email: req.body.email,
       })
-      res.status(201).json(invite)
+      res.status(201).json({ token, invite })
     } catch (error) {
-      if (error instanceof AuthError) {
+      if (error instanceof HttpError) {
         res.status(error.statusCode).json({ error: error.message })
         return
       }
@@ -44,7 +45,7 @@ invitesRouter.get("/:token", async (req, res, next) => {
     const details = await getInviteDetails(req.params.token as string)
     res.json(details)
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error instanceof HttpError) {
       res.status(error.statusCode).json({ error: error.message })
       return
     }
@@ -68,7 +69,7 @@ invitesRouter.post("/:token/accept", validateBody(acceptInviteSchema), async (re
     const { refreshToken: _refreshToken, ...publicSession } = session
     res.status(201).json(publicSession)
   } catch (error) {
-    if (error instanceof AuthError) {
+    if (error instanceof HttpError) {
       res.status(error.statusCode).json({ error: error.message })
       return
     }

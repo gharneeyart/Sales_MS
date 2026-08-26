@@ -15,6 +15,7 @@ export interface RefreshTokenPayload {
 }
 
 export interface InviteTokenPayload {
+  inviteId: string
   orgId: string
   email: string
   role: Extract<MembershipRole, "STAFF">

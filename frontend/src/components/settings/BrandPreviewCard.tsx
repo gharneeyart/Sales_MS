@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { getInitials } from "@/lib/brand"
+import { getReadableForeground } from "@/lib/color"
 
 interface BrandPreviewCardProps {
   displayName: string
@@ -17,9 +18,9 @@ function BrandPreviewCard({ displayName, logoUrl, primaryColor, accentColor }: B
       style={
         {
           "--primary": primaryColor,
-          "--primary-foreground": "#ffffff",
+          "--primary-foreground": getReadableForeground(primaryColor),
           "--accent": accentColor,
-          "--accent-foreground": "#ffffff",
+          "--accent-foreground": getReadableForeground(accentColor),
         } as React.CSSProperties
       }
     >

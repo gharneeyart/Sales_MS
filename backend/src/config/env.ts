@@ -22,4 +22,7 @@ export const env = {
   jwtInviteSecret: required("JWT_INVITE_SECRET"),
   accessTokenTtl: "15m",
   refreshTokenTtlDays: 30,
+
+  frontendUrl: process.env.FRONTEND_URL ?? "http://localhost:5173",
+  paystackSecretKey: required("PAYSTACK_SECRET_KEY"),
 }

@@ -4,10 +4,10 @@ import type { ObjectStorage, UploadInput, UploadResult } from "./ObjectStorage"
 
 // Reads CLOUDINARY_URL from process.env automatically.
 class CloudinaryObjectStorage implements ObjectStorage {
-  async upload({ buffer, keyPrefix }: UploadInput): Promise<UploadResult> {
+  async upload({ buffer, keyPrefix, resourceType = "image" }: UploadInput): Promise<UploadResult> {
     const result = await new Promise<{ public_id: string; secure_url: string }>((resolve, reject) => {
       const stream = cloudinary.uploader.upload_stream(
-        { folder: keyPrefix, resource_type: "image" },
+        { folder: keyPrefix, resource_type: resourceType },
         (error, res) => (error || !res ? reject(error) : resolve(res))
       )
       stream.end(buffer)

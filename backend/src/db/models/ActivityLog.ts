@@ -4,9 +4,11 @@ import {
   type CreationOptional,
   type InferAttributes,
   type InferCreationAttributes,
+  type NonAttribute,
 } from "sequelize"
 
 import { sequelize } from "../sequelize"
+import type { User } from "./User"
 
 export class ActivityLog extends Model<
   InferAttributes<ActivityLog>,
@@ -20,6 +22,8 @@ export class ActivityLog extends Model<
   declare entityId: string
   declare metadata: CreationOptional<Record<string, unknown>>
   declare createdAt: CreationOptional<Date>
+
+  declare Actor?: NonAttribute<User>
 }
 
 ActivityLog.init(

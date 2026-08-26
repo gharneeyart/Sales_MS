@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 import * as api from "@/lib/api"
 import type { BrandSettings } from "@/lib/api"
+import { getReadableForeground } from "@/lib/color"
 import { useAuth } from "./AuthContext"
 
 interface BrandContextValue {
@@ -15,8 +16,11 @@ interface BrandContextValue {
 const BrandContext = createContext<BrandContextValue | null>(null)
 
 function applyTheme(brand: BrandSettings) {
-  document.documentElement.style.setProperty("--primary", brand.primaryColor)
-  document.documentElement.style.setProperty("--accent", brand.accentColor)
+  const root = document.documentElement.style
+  root.setProperty("--primary", brand.primaryColor)
+  root.setProperty("--primary-foreground", getReadableForeground(brand.primaryColor))
+  root.setProperty("--accent", brand.accentColor)
+  root.setProperty("--accent-foreground", getReadableForeground(brand.accentColor))
 }
 
 function BrandProvider({ children }: { children: ReactNode }) {

@@ -9,6 +9,7 @@ import {
 
 import { sequelize } from "../sequelize"
 import type { User } from "./User"
+import type { Supplier } from "./Supplier"
 
 export type StockMovementReason = "SALE" | "RESTOCK" | "ADJUSTMENT" | "RETURN"
 
@@ -21,9 +22,11 @@ export class StockMovement extends Model<
   declare productId: string
   declare change: number
   declare reason: StockMovementReason
+  declare supplierId: CreationOptional<string | null>
   declare performedByUserId: string
   declare createdAt: CreationOptional<Date>
   declare User?: NonAttribute<User>
+  declare Supplier?: NonAttribute<Supplier>
 }
 
 StockMovement.init(
@@ -33,6 +36,7 @@ StockMovement.init(
     productId: { type: DataTypes.UUID, allowNull: false },
     change: { type: DataTypes.INTEGER, allowNull: false },
     reason: { type: DataTypes.ENUM("SALE", "RESTOCK", "ADJUSTMENT", "RETURN"), allowNull: false },
+    supplierId: { type: DataTypes.UUID, allowNull: true },
     performedByUserId: { type: DataTypes.UUID, allowNull: false },
     createdAt: DataTypes.DATE,
   },

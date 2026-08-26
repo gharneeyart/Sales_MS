@@ -8,9 +8,9 @@ import {
 
 import { sequelize } from "../sequelize"
 
-export const DEFAULT_PRIMARY_COLOR = "#2563eb"
-export const DEFAULT_SECONDARY_COLOR = "#0d9488"
-export const DEFAULT_ACCENT_COLOR = "#0d9488"
+export const DEFAULT_PRIMARY_COLOR = "#0C6B5E"
+export const DEFAULT_SECONDARY_COLOR = "#084F45"
+export const DEFAULT_ACCENT_COLOR = "#C96F44"
 
 export class BrandSettings extends Model<
   InferAttributes<BrandSettings>,

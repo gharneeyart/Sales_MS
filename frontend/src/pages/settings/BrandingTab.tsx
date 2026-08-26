@@ -35,6 +35,7 @@ function BrandingTab() {
     formState: { errors, isSubmitting, isDirty },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
+    defaultValues: { displayName: "", primaryColor: "", accentColor: "" },
     values: brand
       ? { displayName: brand.displayName, primaryColor: brand.primaryColor, accentColor: brand.accentColor }
       : undefined,

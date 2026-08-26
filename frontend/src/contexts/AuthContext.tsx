@@ -25,6 +25,7 @@ interface AuthContextValue {
   }) => Promise<void>
   acceptInvite: (input: { token: string; name: string; password: string }) => Promise<void>
   logout: () => Promise<void>
+  updateUser: (user: SessionUser) => void
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -91,8 +92,12 @@ function AuthProvider({ children }: { children: ReactNode }) {
     setState({ status: "unauthenticated" })
   }
 
+  function updateUser(user: SessionUser) {
+    setState((prev) => (prev.status === "authenticated" ? { ...prev, user } : prev))
+  }
+
   return (
-    <AuthContext.Provider value={{ state, login, signup, acceptInvite, logout }}>
+    <AuthContext.Provider value={{ state, login, signup, acceptInvite, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

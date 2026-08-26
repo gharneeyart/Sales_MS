@@ -9,6 +9,7 @@ import {
   verifyRefreshToken,
 } from "../auth/tokens"
 import { HttpError } from "../errors"
+import { TRIAL_DAYS } from "./billingService"
 
 export class AuthError extends HttpError {
   constructor(message: string, statusCode = 401) {
@@ -61,12 +62,20 @@ export async function signup(input: {
       { transaction: t }
     )
 
-    const freePlan = await Plan.findOne({ where: { name: "Free" }, transaction: t })
-    if (!freePlan) {
-      throw new Error("Free plan is not seeded — run `npm run db:seed`")
+    // New orgs get a taste of Pro before they've had a chance to hit any
+    // limits — the trial-expiry sweep (worker.ts) drops anyone who hasn't
+    // added a paid subscription by TRIAL_DAYS back to Free.
+    const trialPlan = await Plan.findOne({ where: { name: "Pro" }, transaction: t })
+    if (!trialPlan) {
+      throw new Error("Pro plan is not seeded — run `npm run db:seed`")
     }
     await Subscription.create(
-      { organizationId: organization.id, planId: freePlan.id, status: "TRIALING" },
+      {
+        organizationId: organization.id,
+        planId: trialPlan.id,
+        status: "TRIALING",
+        currentPeriodEnd: new Date(Date.now() + TRIAL_DAYS * 24 * 60 * 60 * 1000),
+      },
       { transaction: t }
     )
 
